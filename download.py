@@ -10,7 +10,7 @@ FPS_MAPPING = {
     "60 fps": 60, "30 fps": 30, "24 fps": 24
 }
 PLAYBACK_MAPPING = {
-    "0.5x": 0.5, "0.75x": 0.75, "1x": 1, "1.25x": 1.25, "1.5x": 1.5, "1.75x": 1.75, "2x": 2, "2.5x": 2.5, "3x": 3, "3.5": 3.5, "4x": 4
+    "0.5x": 0.5, "0.75x": 0.75, "1x": 1, "1.25x": 1.25, "1.5x": 1.5, "1.75x": 1.75, "2x": 2, "2.5x": 2.5, "3x": 3, "3.5x": 3.5, "4x": 4
 }
 FILE_EXT = {
     ".mp4 (MP4)": "mp4", ".webp (WEBP)": "webp", ".mkv (MKV)": "mkv"
@@ -35,14 +35,14 @@ current_mode = "Simple"
 
 def toggle_mode():
     global current_mode
-    media_type = next_type_var.get()
+    media_type = download_type_var.get()
 
     if current_mode == "Simple":
         current_mode = "Advanced"
         mode_switch_button.configure(text="Simple")
         
-        next_button_simple.grid_forget()
-        next_button_advanced.pack(pady=20, padx=16, anchor="w")
+        download_button_simple.grid_forget()
+        download_button_advanced.pack(pady=20, padx=16, anchor="w")
         
         if media_type == "Video":
             advanced_audio_frame.grid_forget()
@@ -57,8 +57,8 @@ def toggle_mode():
         
         advanced_video_frame.grid_forget()
         advanced_audio_frame.grid_forget()
-        next_button_advanced.pack_forget()
-        next_button_simple.grid(row=2, column=1, sticky="se", padx=20, pady=20)
+        download_button_advanced.pack_forget()
+        download_button_simple.grid(row=2, column=1, sticky="se", padx=20, pady=20)
 
 def toggle_type(selected):
     if current_mode == "Advanced":
@@ -70,9 +70,6 @@ def toggle_type(selected):
             advanced_video_frame.grid(row=2, column=1, padx=16, pady=16, sticky="nsew")
 
 def download():
-    pass
-
-def next_step():
     url = str(url_entry.get())
     
     if url.startswith(("https://")):
@@ -150,14 +147,14 @@ url_entry.pack(pady=16, padx=16, anchor="w")
 download_type_label = ctk.CTkLabel(left_ui_frame, text="Download Type :", font=("Arial", -22, "bold"))
 download_type_label.pack(pady=(28, 0), padx=16, anchor="w")
 
-next_type_var = ctk.StringVar(value="Video")
-next_type_optionmenu = ctk.CTkOptionMenu(left_ui_frame, values=["Video", "Audio"], variable=next_type_var, command=toggle_type)
-next_type_optionmenu.pack(padx=16, pady=16, anchor="w")
+download_type_var = ctk.StringVar(value="Video")
+download_type_optionmenu = ctk.CTkOptionMenu(left_ui_frame, values=["Video", "Audio"], variable=download_type_var, command=toggle_type)
+download_type_optionmenu.pack(padx=16, pady=16, anchor="w")
 
-next_button_advanced = ctk.CTkButton(left_ui_frame, text="Next →", font=("Arial", -22, "bold"), height=40, command=next_step)
+download_button_advanced = ctk.CTkButton(left_ui_frame, text="Download", font=("Arial", -22, "bold"), height=40, command=download)
 
-next_button_simple = ctk.CTkButton(content_parent, text="Next →", font=("Arial", -22, "bold"), height=40, command=next_step)
-next_button_simple.grid(row=2, column=1, sticky="se", padx=20, pady=20)
+download_button_simple = ctk.CTkButton(content_parent, text="Download", font=("Arial", -22, "bold"), height=40, command=download)
+download_button_simple.grid(row=2, column=1, sticky="se", padx=20, pady=20)
 
 # --- Advanced Video Settings ---
 advanced_video_frame = ctk.CTkFrame(content_parent, fg_color="#535260")

@@ -20,7 +20,6 @@ class ScrollableFrame(ctk.CTkFrame):
             my_fg = self.cget("fg_color")
         except Exception:
             my_fg = None
-
         # Determine an effective background color that matches CTk styling
         parent_bg = None
         try:
