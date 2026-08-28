@@ -4,8 +4,8 @@ from scrollable_customtk import ScrollableFrame
 import yt_dlp
 
 RESOLUTION_MAPPING = {
-    "2160p (4K)": 2160, "1440p (HD)": 1440, "1080p (HD)": 1080,
-    "720p": 720, "480p": 480, "360p": 360, "240p": 240, "144p": 144
+    "2160p (4K)": "2160p", "1440p (HD)": "1440p", "1080p (HD)": "1080p",
+    "720p": "720", "480p": "480p", "360p": "360p", "240p": "240p", "144p": "144p"
 }
 FPS_MAPPING = {
     "60 fps": 60, "30 fps": 30, "24 fps": 24
@@ -73,14 +73,28 @@ def toggle_type(selected):
 def download():
     url = str(url_entry.get())
 
-    global current_mode
+    if url.startswith(("https://")):
+        error_label.configure(text="")
+        errorframe.grid_remove()
+
+    else:
+        error_label.configure(text="Error: Your url must start with 'https://'")
+        errorframe.grid(row=0, column=0, columnspan=2, sticky="ew", padx=20, pady=(10, 0))
+        return
+
+    global current_mode, resolution_optionmenu_var
+
     if download_type_var.get() == "Video":
 
         if current_mode == "Simple":
             file_ext = ".mp4"
+            vid_res = "1080p"
+            
         else:
             file_ext = file_ext_optionmenu_var.get()
             file_ext = "." + str(FILE_EXT.get(file_ext))
+
+            vid_res = RESOLUTION_MAPPING.get(str(resolution_optionmenu_var.get()))
             
     else:
 
@@ -91,18 +105,10 @@ def download():
             file_ext = "." + str(AUDIO_FILE_EXT.get(file_ext))
 
 
-    if url.startswith(("https://")):
-        error_label.configure(text="")
-        errorframe.grid_remove()
-
-    else:
-        error_label.configure(text="Error: Your url must start with 'https://'")
-        errorframe.grid(row=0, column=0, columnspan=2, sticky="ew", padx=20, pady=(10, 0))
-
 
 # ========== UI Setup ==========
 root = ctk.CTk()
-root.title("Social Media Downloader")
+root.title("Box-Dlp - Download Audio and Video from Youube, Insta and More")
 
 scr_w, scr_h = root.winfo_screenwidth(), root.winfo_screenheight()
 win_w, win_h = floor(scr_w * (2/3)), floor(scr_h * (2/3))
@@ -184,20 +190,12 @@ resolution_optionmenu_var = ctk.StringVar(value="1080p (HD)")
 resolution_optionmenu = ctk.CTkOptionMenu(advanced_video_frame, values=list(RESOLUTION_MAPPING.keys()), variable=resolution_optionmenu_var)
 resolution_optionmenu.grid(column=1, row=0, pady=(28, 0), padx=16, sticky="ew")
 
-resolution_checkbox_var = ctk.StringVar(value="off")
-resolution_force_checkbox = ctk.CTkCheckBox(advanced_video_frame, text="Force Resolution",  variable=resolution_checkbox_var, onvalue="on", offvalue="off")
-resolution_force_checkbox.grid(column=1, row=1, pady=(8, 0), padx=16, sticky="e")
-
 frame_rate_label = ctk.CTkLabel(advanced_video_frame, text="Frame Rate :", font=("Arial", -22))
 frame_rate_label.grid(column=0, row=2, pady=(28, 0), padx=22, sticky="w")
 
 frame_rate_optionmenu_var = ctk.StringVar(value="30 fps")
 frame_rate_optionmenu = ctk.CTkOptionMenu(advanced_video_frame, values=list(FPS_MAPPING.keys()), variable=frame_rate_optionmenu_var)
 frame_rate_optionmenu.grid(column=1, row=2, pady=(28, 0), padx=16, sticky="ew")
-
-frame_rate_checkbox_var = ctk.StringVar(value="off")
-frame_rate_force_checkbox = ctk.CTkCheckBox(advanced_video_frame, text="Force Frame Rate",  variable=frame_rate_checkbox_var, onvalue="on", offvalue="off")
-frame_rate_force_checkbox.grid(column=1, row=3, pady=(8, 0), padx=16, sticky="e")
 
 play_back_speed_label = ctk.CTkLabel(advanced_video_frame, text="Playback Speed :", font=("Arial", -22))
 play_back_speed_label.grid(column=0, row=4, pady=28, padx=22, sticky="w")
@@ -213,10 +211,6 @@ file_ext_optionmenu_var = ctk.StringVar(value=".mp4 (MP4)")
 file_ext_optionmenu = ctk.CTkOptionMenu(advanced_video_frame, values=list(FILE_EXT.keys()), variable=file_ext_optionmenu_var)
 file_ext_optionmenu.grid(column=1, row=5, padx=16, sticky="ew")
 
-file_ext_checkbox_var = ctk.StringVar(value="off")
-file_ext_force_checkbox = ctk.CTkCheckBox(advanced_video_frame, text="Force File extension",  variable=file_ext_checkbox_var, onvalue="on", offvalue="off")
-file_ext_force_checkbox.grid(column=1, row=6, pady=8, padx=16, sticky="e")
-
 # --- Advanced Audio Settings ---
 advanced_audio_frame = ctk.CTkFrame(content_parent, fg_color="#535260")
 advanced_audio_frame.columnconfigure(1, weight=1)
@@ -227,10 +221,6 @@ audio_file_ext_label.grid(column=0, row=0, pady=(28, 0), padx=22, sticky="w")
 audio_file_ext_optionmenu_var = ctk.StringVar(value=".mp3 (MP3)")
 audio_file_ext_optionmenu = ctk.CTkOptionMenu(advanced_audio_frame, values=list(AUDIO_FILE_EXT.keys()), variable=audio_file_ext_optionmenu_var)
 audio_file_ext_optionmenu.grid(column=1, row=0, pady=(28, 0), padx=16, sticky="ew")
-
-audio_file_ext_checkbox_var = ctk.StringVar(value="off")
-audio_file_ext_force_checkbox = ctk.CTkCheckBox(advanced_audio_frame, text="Force File extension",  variable=audio_file_ext_checkbox_var, onvalue="on", offvalue="off")
-audio_file_ext_force_checkbox.grid(column=1, row=1, pady=(8, 0), padx=16, sticky="e")
 
 audio_playback_speed_label = ctk.CTkLabel(advanced_audio_frame, text="Playback Speed :", font=("Arial", -22))
 audio_playback_speed_label.grid(column=0, row=2, pady=28, padx=22, sticky="w")
