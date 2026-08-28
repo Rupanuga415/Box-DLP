@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from math import floor
 from scrollable_customtk import ScrollableFrame
+import yt_dlp
 
 RESOLUTION_MAPPING = {
     "2160p (4K)": 2160, "1440p (HD)": 1440, "1080p (HD)": 1080,
@@ -71,12 +72,28 @@ def toggle_type(selected):
 
 def download():
     url = str(url_entry.get())
-    
+
+    global current_mode
+    if download_type_var.get() == "Video":
+
+        if current_mode == "Simple":
+            file_ext = ".mp4"
+        else:
+            file_ext = file_ext_optionmenu_var.get()
+            file_ext = "." + str(FILE_EXT.get(file_ext))
+            
+    else:
+
+        if current_mode == "Simple":
+            file_ext = ".mp3"
+        else:
+            file_ext = audio_file_ext_optionmenu_var.get()
+            file_ext = "." + str(AUDIO_FILE_EXT.get(file_ext))
+
+
     if url.startswith(("https://")):
         error_label.configure(text="")
         errorframe.grid_remove()
-
-        
 
     else:
         error_label.configure(text="Error: Your url must start with 'https://'")
