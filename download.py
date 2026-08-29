@@ -92,6 +92,7 @@ def download():
             file_ext = "mp4"
             vid_res = "1080p"
             frame_rate = "30"
+            vid_speed = "1"
 
         #For Advanced Mode
         else:
@@ -99,7 +100,10 @@ def download():
             file_ext = str(FILE_EXT.get(file_ext))
 
             vid_res = RESOLUTION_MAPPING.get(str(resolution_optionmenu_var.get()))
+
             frame_rate = FPS_MAPPING.get(str(frame_rate_optionmenu_var.get()))
+
+            vid_speed = PLAYBACK_MAPPING.get(str(play_back_speed_optionmenu_var.get()))
 
     #For Audio
     else:
