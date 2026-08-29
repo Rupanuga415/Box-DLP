@@ -5,10 +5,10 @@ import yt_dlp
 
 RESOLUTION_MAPPING = {
     "2160p (4K)": "2160p", "1440p (HD)": "1440p", "1080p (HD)": "1080p",
-    "720p": "720", "480p": "480p", "360p": "360p", "240p": "240p", "144p": "144p"
+    "720p": "720p", "480p": "480p", "360p": "360p", "240p": "240p"
 }
 FPS_MAPPING = {
-    "60 fps": 60, "30 fps": 30, "24 fps": 24
+    "120 fps": 120, "60 fps": 60, "30 fps": 30, "24 fps": 24
 }
 PLAYBACK_MAPPING = {
     "0.5x": 0.5, "0.75x": 0.75, "1x": 1, "1.25x": 1.25, "1.5x": 1.5, "1.75x": 1.75, "2x": 2, "2.5x": 2.5, "3x": 3, "3.5x": 3.5, "4x": 4
@@ -84,25 +84,34 @@ def download():
 
     global current_mode, resolution_optionmenu_var
 
+    #For Video
     if download_type_var.get() == "Video":
 
+        #For Simple Mode
         if current_mode == "Simple":
-            file_ext = ".mp4"
+            file_ext = "mp4"
             vid_res = "1080p"
-            
+            frame_rate = "30"
+
+        #For Advanced Mode
         else:
             file_ext = file_ext_optionmenu_var.get()
-            file_ext = "." + str(FILE_EXT.get(file_ext))
+            file_ext = str(FILE_EXT.get(file_ext))
 
             vid_res = RESOLUTION_MAPPING.get(str(resolution_optionmenu_var.get()))
-            
+            frame_rate = FPS_MAPPING.get(str(frame_rate_optionmenu_var.get()))
+
+    #For Audio
     else:
 
+        #For simple Mode
         if current_mode == "Simple":
-            file_ext = ".mp3"
+            file_ext = "mp3"
+
+        #For Advanced Mode
         else:
             file_ext = audio_file_ext_optionmenu_var.get()
-            file_ext = "." + str(AUDIO_FILE_EXT.get(file_ext))
+            file_ext = str(AUDIO_FILE_EXT.get(file_ext))
 
 
 
