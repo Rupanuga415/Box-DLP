@@ -14,7 +14,7 @@ PLAYBACK_MAPPING = {
     "0.5x": 0.5, "0.75x": 0.75, "1x": 1, "1.25x": 1.25, "1.5x": 1.5, "1.75x": 1.75, "2x": 2, "2.5x": 2.5, "3x": 3, "3.5x": 3.5, "4x": 4
 }
 FILE_EXT = {
-    ".mp4 (MP4)": "mp4", ".webp (WEBP)": "webp", ".mkv (MKV)": "mkv", ".mov (MOV)": "mov"
+    ".mp4 (MP4)": "mp4", ".mkv (MKV)": "mkv", ".mov (MOV)": "mov", ".webp (WEBP)": "webp"
 }
 AUDIO_FILE_EXT = {
     ".mp3 (MP3)": "mp3", ".wav (WAV)": "wav"
@@ -89,10 +89,14 @@ def download():
 
         #For Simple Mode
         if current_mode == "Simple":
-            file_ext = "mp4"
-            vid_res = "1080p"
-            frame_rate = "30"
-            vid_speed = "1"
+
+            ydl_opts = {
+                'format': 'bestvideo+bestaudio/best',
+                'outtmpl': '%(title)s.%(ext)s',
+            }
+
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                ydl.download([url])
 
         #For Advanced Mode
         else:
@@ -105,6 +109,14 @@ def download():
 
             vid_speed = PLAYBACK_MAPPING.get(str(play_back_speed_optionmenu_var.get()))
 
+            ydl_opts = {
+                'format': f"{vid_res}/best",
+                'outtmpl': '%(title)s.%(ext)s',
+            }
+
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                ydl.download([url])
+
     #For Audio
     else:
 
@@ -113,12 +125,36 @@ def download():
             file_ext = "mp3"
             audio_speed = "1"
 
+            ydl_opts = {
+                "format": "bestaudio/best",
+                "outtmpl": "%(title)s.%(ext)s",
+                "postprocessors": [{
+                    "key": "FFmpegExtractAudio",
+                    "preferredcodec": "mp3",
+                    "preferredquality": "0"
+                }],
+            }
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                ydl.download([url])
+
         #For Advanced Mode
         else:
             file_ext = audio_file_ext_optionmenu_var.get()
             file_ext = str(AUDIO_FILE_EXT.get(file_ext))
 
             audio_speed = PLAYBACK_MAPPING.get(str(audio_play_backspeed_optionmenu_var.get()))
+
+            ydl_opts = {
+                "format": "bestaudio/best",
+                "outtmpl": "%(title)s.%(ext)s",
+                "postprocessors": [{
+                    "key": "FFmpegExtractAudio",
+                    "preferredcodec": "mp3",
+                    "preferredquality": "0"
+                }],
+            }
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                ydl.download([url])
 
 
 # ========== UI Setup ==========
